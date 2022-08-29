@@ -10,15 +10,11 @@ using System.Threading;
 
 namespace Networknator.Networking
 {
-    public class Client
+    public class Client : Peer
     {
-        private TcpClient socket;
         public string ConnectionString { get; private set; }
         public bool IsRunning { get; private set; }
-        private NetworkStream stream;
-        private byte[] buffer;
 
-        public event Action<byte[]> OnDataReceived;
         public event Action OnConnected;
         public event Action OnConnectionFailed;
         public event Action<string> OnDisconnected;
@@ -69,16 +65,7 @@ namespace Networknator.Networking
             {
                 try
                 {
-                    int byteLength = stream.Read(buffer, 0, 4096);
-                    byte[] data = new byte[byteLength];
-
-                    Array.Copy(buffer, data, byteLength);
-
-                    OnDataReceived?.Invoke(data);
-
-                    Array.Clear(buffer, 0, 4096);
-                    Array.Clear(data, 0, byteLength);
-
+                    ReceiveData();
                 }
                 catch(Exception e)
                 {
@@ -88,7 +75,7 @@ namespace Networknator.Networking
             }
         }
 
-        public void Stop(string reason)
+        public void Stop(string reason = "")
         {
             IsRunning = false;
             OnDisconnected?.Invoke(reason);

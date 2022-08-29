@@ -13,9 +13,9 @@ namespace Networknator.Networking
 {
     public class Server
     {
-        public Dictionary<int, Connection> clients = new Dictionary<int, Connection>();
+        public Dictionary<int, ServerConnection> clients = new Dictionary<int, ServerConnection>();
         private TcpListener tcpListener;
-        public int Port { get; set; }
+        public int Port { get; private set; }
         public int MaxClients { get; set; }
         public bool IsRunning { get; private set; }
 
@@ -53,7 +53,7 @@ namespace Networknator.Networking
         {
             for (int i = 1; i <= MaxClients; i++)
             {
-                clients.Add(i, new Connection(i));
+                clients.Add(i, new ServerConnection(i));
             }
         }
 
@@ -70,9 +70,9 @@ namespace Networknator.Networking
         {
             for (int i = 1; i <= MaxClients; i++)
             {
-                if(clients[i].Socket == null)
+                if(clients[i].socket == null)
                 {
-                    clients[i].OnDataReceived += (id, data) => OnDataReceived.Invoke(id, data);
+                    clients[i].OnDataFromClient += (id, data) => OnDataReceived.Invoke(id, data);
                     clients[i].OnDisconnected += (id) => OnDisconnection?.Invoke(id);
                     clients[i].Connect(client);
                     OnConnection?.Invoke(i);
@@ -107,7 +107,7 @@ namespace Networknator.Networking
         {
             for (int i = 1; i <= MaxClients; i++)
             {
-                if (clients[i].Socket != null && i == clientID)
+                if (clients[i].socket != null && i == clientID)
                 {
                     try
                     {

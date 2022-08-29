@@ -8,37 +8,38 @@ using System.Threading;
 
 namespace Networknator.Networking
 {
-    public class Connection
+    /// <summary>
+    /// Represents a connection from a <see cref="Client"/> in the <see cref="Server"/>
+    /// </summary>
+    public class ServerConnection : Peer
     {
+        /// <summary>
+        /// The ID of the connection
+        /// </summary>
         public int ID { get; private set; }
-        public TcpClient Socket { get; private set; }
-        public byte[] Buffer { get; set; }
 
-        private NetworkStream stream;
-        private Thread receiveThread;
-
-        public event Action<int, byte[]> OnDataReceived;
         public event Action<int> OnDisconnected;
+        public event Action<int, byte[]> OnDataFromClient;
 
-        public Connection(int id)
+        public ServerConnection(int id)
         {
             ID = id;
-            Buffer = new byte[4096];
+            buffer = new byte[4096];
         }
 
         public void Connect(TcpClient socket)
         {
-            Socket = socket;
-            stream = Socket.GetStream();
-            receiveThread = new Thread(ReceiveThread);
-            receiveThread.Start();
+            this.socket = socket;
+            stream = socket.GetStream();
+            new Thread(ReceiveThread).Start();
+            OnDataReceived += (data) => OnDataFromClient?.Invoke(ID, data);
         }
 
         public void Disconnect()
         {
-            Socket.Close();
-            Buffer = null;
-            Socket = null;
+            socket.Close();
+            buffer = null;
+            socket = null;
             stream = null;
             OnDisconnected.Invoke(ID);
         }
@@ -55,16 +56,7 @@ namespace Networknator.Networking
             {
                 try
                 {
-                    int byteLength = stream.Read(Buffer, 0, 4096);
-
-                    byte[] data = new byte[byteLength];
-
-                    Array.Copy(Buffer, data, byteLength);
-
-                    OnDataReceived.Invoke(ID, data);
-
-                    Array.Clear(Buffer, 0, 4096);
-                    Array.Clear(data, 0, byteLength);
+                    ReceiveData();
                 }
                 catch (Exception)
                 {
