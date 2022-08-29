@@ -20,13 +20,17 @@ namespace Networknator.Networking
 
         public event Action<byte[]> OnDataReceived;
         public event Action OnConnected;
+        public event Action OnConnectionFailed;
+        public event Action<string> OnDisconnected;
 
         public void Run(string connectionString)
         {
             if (IsRunning) return;
-            socket = new TcpClient();
-            socket.ReceiveBufferSize = 4096;
-            socket.SendBufferSize = 4096;
+            socket = new TcpClient
+            {
+                ReceiveBufferSize = 4096,
+                SendBufferSize = 4096
+            };
             buffer = new byte[4096];
 
             string[] parsedConn = connectionString.Split(':');
@@ -36,7 +40,12 @@ namespace Networknator.Networking
                 socket.Connect(iP);
                 stream = socket.GetStream();
             }
-            catch (Exception e){ NetworknatorLogger.Log(LogType.error, e.Message); return; }
+            catch (Exception e)
+            { 
+                NetworknatorLogger.Log(LogType.error, e.Message);
+                OnConnectionFailed?.Invoke();
+                return; 
+            }
             IsRunning = true;
             OnConnected?.Invoke();
             new Thread(ReceiveThread).Start();
@@ -44,7 +53,14 @@ namespace Networknator.Networking
 
         public void Send(byte[] data)
         {
-            stream.Write(data, 0, data.Length);
+            try
+            {
+                stream.Write(data, 0, data.Length);
+            }
+            catch (Exception e)
+            {
+                Stop(e.Message);
+            }
         }
 
         private void ReceiveThread()
@@ -66,16 +82,16 @@ namespace Networknator.Networking
                 }
                 catch(Exception e)
                 {
-                    NetworknatorLogger.Log(LogType.error, e.Message);
-                    Stop();
+                    Stop(e.Message);
                 }
                 
             }
         }
 
-        public void Stop()
+        public void Stop(string reason)
         {
             IsRunning = false;
+            OnDisconnected?.Invoke(reason);
         }
     }
 }

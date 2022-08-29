@@ -17,6 +17,14 @@ namespace Networknator.Utils
             logMethods.Add(LogType.warning, warningLog);
         }
 
+        public static void StartLogger(LogMethod generalLog)
+        {
+            logMethods.Clear();
+            logMethods.Add(LogType.normal, generalLog);
+            logMethods.Add(LogType.error, generalLog);
+            logMethods.Add(LogType.warning, generalLog);
+        }
+
         public static void Log(LogType logType, object toLog)
         {
             if(logMethods.TryGetValue(logType, out LogMethod method))

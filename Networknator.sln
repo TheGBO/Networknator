@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.32602.291
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Networknator", "Networknator\Networknator.csproj", "{59CAE25E-52E2-4A74-A2DC-244C2D82BF68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer", "Test.Server\TestServer.csproj", "{2BD87F87-80F5-4F9B-8828-BA5FF46CFD54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestServer", "Test.Server\TestServer.csproj", "{2BD87F87-80F5-4F9B-8828-BA5FF46CFD54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "Test.Client\TestClient.csproj", "{44A7AE5E-3DE1-4C88-8189-9896A8A76361}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient", "Test.Client\TestClient.csproj", "{44A7AE5E-3DE1-4C88-8189-9896A8A76361}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FA0E0DC2-D657-4631-9370-4AC3845C3E72}"
 	ProjectSection(SolutionItems) = preProject

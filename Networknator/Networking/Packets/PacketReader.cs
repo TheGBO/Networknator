@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Networknator.Networking.Packets
 {
-    public class PacketReader : IDisposable, IReader
+    public class PacketReader : IDisposable
     {
         private readonly MemoryStream dataStream;
 
@@ -44,16 +44,5 @@ namespace Networknator.Networking.Packets
         {
             dataStream.Dispose();
         }
-    }
-
-    public interface IReader
-    {
-        byte ReadByte();
-        int ReadInt();
-        long ReadLong();
-        float ReadFloat();
-        bool ReadBool();
-        string ReadString();
-        byte[] ReadRaw(int length);
     }
 }

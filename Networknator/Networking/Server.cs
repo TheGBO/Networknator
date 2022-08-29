@@ -22,17 +22,17 @@ namespace Networknator.Networking
         public event Action<int> OnConnection;
         public event Action<int> OnDisconnection;
         public event Action<int, byte[]> OnDataReceived;
-        private byte[] buffer;
 
         public Dictionary<int, PacketHandler> packetHandlers = new Dictionary<int, PacketHandler>();
         public delegate void PacketHandler(byte[] data);
+
+        public string ConnectionString() => $"{IPUtils.GetLocalIPAddress()}:{Port}";
 
         public void Run(int port, int maxClients = 32)
         {
             if (IsRunning) return;
             Port = port;
             MaxClients = maxClients;
-            buffer = new byte[4096];
 
             tcpListener = new TcpListener(IPAddress.Any, port);
             tcpListener.Start();
@@ -40,6 +40,7 @@ namespace Networknator.Networking
             InitServerData();
 
             IsRunning = true;
+            NetworknatorLogger.Log(LogType.normal, $"Server Initialized at port: {Port} !");
             new Thread(ListenThread).Start();
         }
 
@@ -72,6 +73,7 @@ namespace Networknator.Networking
                 if(clients[i].Socket == null)
                 {
                     clients[i].OnDataReceived += (id, data) => OnDataReceived.Invoke(id, data);
+                    clients[i].OnDisconnected += (id) => OnDisconnection?.Invoke(id);
                     clients[i].Connect(client);
                     OnConnection?.Invoke(i);
                     return i;
@@ -83,16 +85,21 @@ namespace Networknator.Networking
         public void DisconnectClient(int clientID)
         {
             clients[clientID].Disconnect();
-            
-            NetworknatorLogger.Log(LogType.normal, $"Client disconnected {clientID}");
-            OnDisconnection?.Invoke(clientID);
         }
 
-        public void SendDataToAll(byte[] data)
+        public void SendDataToAll(byte[] data, bool exclude = false, int excludeID = 0)
         {
             for (int i = 1; i <= MaxClients; i++)
             {
-                SendDataTo(i, data);
+                if (exclude)
+                {
+                    if(i != excludeID)
+                        SendDataTo(i, data);
+                }
+                else
+                {
+                    SendDataTo(i, data);
+                }
             }
         }
 

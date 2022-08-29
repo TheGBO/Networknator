@@ -18,6 +18,7 @@ namespace Networknator.Networking
         private Thread receiveThread;
 
         public event Action<int, byte[]> OnDataReceived;
+        public event Action<int> OnDisconnected;
 
         public Connection(int id)
         {
@@ -35,8 +36,11 @@ namespace Networknator.Networking
 
         public void Disconnect()
         {
+            Socket.Close();
+            Buffer = null;
             Socket = null;
             stream = null;
+            OnDisconnected.Invoke(ID);
         }
 
         public void Send(byte[] data)
@@ -49,15 +53,24 @@ namespace Networknator.Networking
         {
             while (stream != null)
             {
-                int byteLength = stream.Read(Buffer, 0, 4096);
-                byte[] data = new byte[byteLength];
+                try
+                {
+                    int byteLength = stream.Read(Buffer, 0, 4096);
 
-                Array.Copy(Buffer, data, byteLength);
+                    byte[] data = new byte[byteLength];
 
-                OnDataReceived.Invoke(ID, data);
+                    Array.Copy(Buffer, data, byteLength);
 
-                Array.Clear(Buffer, 0, 4096);
-                Array.Clear(data, 0, byteLength);
+                    OnDataReceived.Invoke(ID, data);
+
+                    Array.Clear(Buffer, 0, 4096);
+                    Array.Clear(data, 0, byteLength);
+                }
+                catch (Exception)
+                {
+
+                    Disconnect();
+                }
             }
         }
     }
