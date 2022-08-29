@@ -3,7 +3,7 @@ using Networknator.Networking.Packets;
 using Networknator.Utils;
 using System;
 
-namespace Networknator
+namespace NetworknatorExample
 {
     class Program
     {
@@ -24,10 +24,11 @@ namespace Networknator
 
             server.OnDataReceived += (id, data) =>
             {
-                using(PacketReader reader = new PacketReader(data))
+                using (PacketReader reader = new PacketReader(data))
                 {
                     Console.WriteLine($"[server] client of {id} sent data");
-                    Console.WriteLine($"[server]");
+                    Console.WriteLine($"[server] packet id: {reader.ReadInt()}");
+                    Console.WriteLine($"[server] packet message: {reader.ReadString()}");
                 }
             };
 
@@ -37,8 +38,9 @@ namespace Networknator
             {
                 using (PacketReader reader = new PacketReader(data))
                 {
-                    Console.WriteLine("[client] received packet of id: " + reader.ReadInt());
-                    Console.WriteLine("[client] received packet data: " + reader.ReadString());
+                    Console.WriteLine("[client] server sent data");
+                    Console.WriteLine($"[client] packet id: {reader.ReadInt()}");
+                    Console.WriteLine($"[client] packet message: {reader.ReadString()}");
                 }
             };
             client.OnConnected += () =>
@@ -50,7 +52,7 @@ namespace Networknator
             };
 
             client.Run("127.0.0.1:8900");
-            
+
 
             Console.ReadLine();
         }

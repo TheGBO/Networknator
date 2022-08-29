@@ -51,17 +51,31 @@ namespace Networknator.Networking
         {
             while (IsRunning)
             {
-                int byteLength = stream.Read(buffer, 0, 4096);
-                byte[] data = new byte[byteLength];
+                try
+                {
+                    int byteLength = stream.Read(buffer, 0, 4096);
+                    byte[] data = new byte[byteLength];
 
-                Array.Copy(buffer, data, byteLength);
+                    Array.Copy(buffer, data, byteLength);
 
-                OnDataReceived?.Invoke(data);
+                    OnDataReceived?.Invoke(data);
 
-                Array.Clear(buffer, 0, 4096);
-                Array.Clear(data, 0, byteLength);
+                    Array.Clear(buffer, 0, 4096);
+                    Array.Clear(data, 0, byteLength);
+
+                }
+                catch(Exception e)
+                {
+                    NetworknatorLogger.Log(LogType.error, e.Message);
+                    Stop();
+                }
                 
             }
+        }
+
+        public void Stop()
+        {
+            IsRunning = false;
         }
     }
 }

@@ -92,11 +92,11 @@ namespace Networknator.Networking
         {
             for (int i = 1; i <= MaxClients; i++)
             {
-                SendDataTo(data, i);
+                SendDataTo(i, data);
             }
         }
 
-        public void SendDataTo(byte[] data, int clientID)
+        public void SendDataTo(int clientID, byte[] data)
         {
             for (int i = 1; i <= MaxClients; i++)
             {
