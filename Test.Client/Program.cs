@@ -8,7 +8,6 @@ namespace TestClient
 {
     class Program
     {
-        public delegate void PacketHandler(PacketReader reader);
 
         static void Main(string[] args)
         {
