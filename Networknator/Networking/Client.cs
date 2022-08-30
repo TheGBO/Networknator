@@ -44,6 +44,7 @@ namespace Networknator.Networking
             }
             IsRunning = true;
             OnConnected?.Invoke();
+            NetworknatorLogger.Log(LogType.normal, $"Client connected successfully at {connectionString}");
             new Thread(ReceiveThread).Start();
         }
 
@@ -76,7 +77,7 @@ namespace Networknator.Networking
             }
         }
 
-        public void Stop(string reason = "")
+        public void Stop(string reason = "no reason specified")
         {
             IsRunning = false;
             OnDisconnected?.Invoke(reason);
