@@ -56,7 +56,7 @@ namespace Networknator.Networking
             }
             catch (Exception e)
             {
-                Stop(e.Message);
+                Stop(e.ToString());
             }
         }
 
@@ -71,7 +71,7 @@ namespace Networknator.Networking
                 catch(Exception e)
                 {
                     Stop(e.Message);
-                    NetworknatorLogger.Log(LogType.error, e.Message);
+                    NetworknatorLogger.Log(LogType.error, e.ToString());
                 }
                 
             }

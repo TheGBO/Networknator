@@ -1,14 +1,13 @@
-public enum ClientToServer
-{
-    welcomeReceived,
-    playerPositionUpdate
-}
-
 public enum ServerToClient
 {
     welcome,
-    playerConnected,
-    playerDisconnected,
-    playerPositionUpdate,
+    playerSpawned,
+    playerPosition,
     playerLeft
+}
+
+public enum ClientToServer
+{
+    welcomeReceived,
+    playerPosition
 }

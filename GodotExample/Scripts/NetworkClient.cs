@@ -1,5 +1,6 @@
 using Godot;
 using Networknator.Networking;
+using Networknator.Networking.Packets;
 using Networknator.Utils;
 using System;
 
@@ -7,6 +8,7 @@ public class NetworkClient : Node
 {
 	public static NetworkClient instance;
 	public Client client = new Client();
+	public static int localID;
 
 	public override void _Ready()
 	{
@@ -30,7 +32,45 @@ public class NetworkClient : Node
 		{
 			LobbyUI.instance.Show();
 		};
+
+		client.OnDataReceived += data => 
+		{
+			using(PacketReader reader = new PacketReader(data))
+			{
+				int packetID = reader.ReadInt();
+				HandlePacket(packetID, reader);
+			}
+		};
+
 		client.Run("127.0.0.1:8090");
+	}
+
+	public void HandlePacket(int id, PacketReader reader)
+	{
+		switch ((ServerToClient)id)
+		{
+			case ServerToClient.welcome:
+				int myID = reader.ReadInt();
+				localID = myID;
+				string message = reader.ReadString();
+				GD.Print(message);
+				client.Send(new PacketBuilder()
+					.Write((int)ClientToServer.welcomeReceived)
+					.Write(myID)
+					.Done());
+				break;
+		
+			case ServerToClient.playerSpawned:
+				ClientPlayer.Spawn(reader.ReadInt());
+				break;
+
+			case ServerToClient.playerPosition:
+				if(ClientPlayer.list.TryGetValue(reader.ReadInt(), out ClientPlayer player))
+				{
+					player.GlobalPosition = new Vector2(reader.ReadFloat(), reader.ReadFloat());
+				}
+				break;
+		}
 	}
 
 }

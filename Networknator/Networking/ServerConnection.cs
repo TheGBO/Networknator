@@ -38,7 +38,6 @@ namespace Networknator.Networking
 
         public void Disconnect()
         {
-            socket.Close();
             buffer = null;
             socket = null;
             stream = null;

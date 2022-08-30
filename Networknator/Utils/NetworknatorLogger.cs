@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Networknator.Utils
@@ -25,11 +26,11 @@ namespace Networknator.Utils
             logMethods.Add(LogType.warning, generalLog);
         }
 
-        public static void Log(LogType logType, object toLog)
+        public static void Log(LogType logType, object toLog, [CallerLineNumber] int lineNumber = 0,[CallerMemberName] string caller = null, [CallerFilePath] string callerFile = null)
         {
             if(logMethods.TryGetValue(logType, out LogMethod method))
             {
-                method($"[{DateTime.Now}] :: " + toLog.ToString());
+                method($"[{DateTime.Now}] :: " + toLog.ToString() + $"  {callerFile}:{caller} at line {lineNumber}");
             }
         }
 
