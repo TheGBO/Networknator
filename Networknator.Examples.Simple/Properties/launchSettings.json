@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Networknator.Examples.Simple": {
-      "commandName": "Project",
-      "commandLineArgs": "--server"
-    }
-  }
-}
