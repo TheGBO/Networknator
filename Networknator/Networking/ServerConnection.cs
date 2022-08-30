@@ -1,4 +1,5 @@
 ﻿using Networknator.Networking.Packets;
+using Networknator.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -58,12 +59,13 @@ namespace Networknator.Networking
                 {
                     ReceiveData();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
+                    NetworknatorLogger.Log(LogType.error, e.Message);
                     Disconnect();
                 }
             }
+            Disconnect();
         }
     }
 }

@@ -70,6 +70,7 @@ namespace Networknator.Networking
                 catch(Exception e)
                 {
                     Stop(e.Message);
+                    NetworknatorLogger.Log(LogType.error, e.Message);
                 }
                 
             }

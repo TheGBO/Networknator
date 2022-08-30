@@ -1,5 +1,6 @@
 ﻿using Networknator.Networking;
 using Networknator.Networking.Packets;
+using Networknator.Utils;
 using System;
 
 namespace Networknator.Examples.Simple
@@ -8,43 +9,44 @@ namespace Networknator.Examples.Simple
     {
         static void Main(string[] args)
         {
+            NetworknatorLogger.StartLogger(Console.WriteLine);
+
+
             Server server = new Server();
-            Client client = new Client();
-
-
             server.OnDataReceived += (id, data) =>
             {
                 using (PacketReader reader = new PacketReader(data))
                 {
-                    Console.WriteLine("[Server] :: " + reader.ReadString());
+                    Console.WriteLine("[Server Received] :: " + reader.ReadString());
                 }
                 server.SendDataTo(id, new PacketBuilder()
                     .Write("pong")
                     .Done());
+                Console.WriteLine("[Server Sent] :: pong");
 
             };
 
-            server.Run(29509);
 
 
-
+            Client client = new Client();
             client.OnConnected += () =>
             {
                 client.Send(new PacketBuilder()
                     .Write("ping")
                     .Done());
+                Console.WriteLine("[Client Sent] :: ping");
             };
 
-            client.OnDataReceived += (data) =>
+            client.OnDataReceived += data =>
             {
                 using (PacketReader reader = new PacketReader(data))
                 {
-                    Console.WriteLine("[Client] :: " + reader.ReadString());
+                    Console.WriteLine("[Client Received] :: " + reader.ReadString());
                 }
             };
-            client.Run("127.0.0.1:29509");
-            
-            Console.ReadKey();
+
+            server.Run(29509);
+            client.Run(server.ConnectionString());
         }
     }
 }

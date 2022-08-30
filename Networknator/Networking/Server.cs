@@ -39,13 +39,25 @@ namespace Networknator.Networking
 
             InitServerData();
 
-            IsRunning = true;
             NetworknatorLogger.Log(LogType.normal, $"Server Initialized at port: {Port} !");
-            new Thread(ListenThread).Start();
+            new Thread(() => 
+            {
+                IsRunning = true;
+                while (IsRunning)
+                {
+                    try
+                    {
+                        TcpClient client = tcpListener.AcceptTcpClient();
+                        AddConnectedClient(client);
+                    }
+                    catch (Exception) { }
+                }
+            }).Start();
         }
 
         public void Stop()
         {
+            tcpListener.Stop();
             IsRunning = false;
         }
 
@@ -57,16 +69,7 @@ namespace Networknator.Networking
             }
         }
 
-        private void ListenThread()
-        {
-            while (IsRunning)
-            {
-                TcpClient client = tcpListener.AcceptTcpClient();
-                int newClientID = AddConnectedClient(client);
-            }
-        }
-
-        private int AddConnectedClient(TcpClient client)
+        private void AddConnectedClient(TcpClient client)
         {
             for (int i = 1; i <= MaxClients; i++)
             {
@@ -76,10 +79,9 @@ namespace Networknator.Networking
                     clients[i].OnDisconnected += (id) => OnDisconnection?.Invoke(id);
                     clients[i].Connect(client);
                     OnConnection?.Invoke(i);
-                    return i;
+                    return;
                 }
             }
-            return -1;
         }
 
         public void DisconnectClient(int clientID)
