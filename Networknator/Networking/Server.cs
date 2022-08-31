@@ -15,7 +15,6 @@ namespace Networknator.Networking
     {
         private Dictionary<int, ServerConnection> clients = new Dictionary<int, ServerConnection>();
         private TcpListener tcpListener;
-        private UdpClient udpServer;
         public int Port { get; private set; }
         public int MaxClients { get; set; }
         public bool IsRunning { get; private set; }
@@ -40,7 +39,7 @@ namespace Networknator.Networking
         /// Initialize and run the server
         /// </summary>
         /// <param name="port">port used to bind the server socket</param>
-        /// <param name="maxClients"></param>
+        /// <param name="maxClients">number of maximum clientss</param>
         public void Run(int port, int maxClients = 32)
         {
             if (IsRunning) return;
@@ -49,7 +48,6 @@ namespace Networknator.Networking
 
             tcpListener = new TcpListener(IPAddress.Any, port);
             tcpListener.Start();
-
 
             InitServerData();
 
