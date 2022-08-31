@@ -25,12 +25,12 @@ public class ServerPlayer : Node2D
 
 	public void SendSpawn(int toClientid)
 	{
-		NetworkServer.instance.server.SendDataTo(toClientid, AddSpawnData());
+		NetworkServer.instance.server.SendTCPDataTo(toClientid, AddSpawnData());
 	}
 
 	public void SendSpawn()
 	{
-		NetworkServer.instance.server.SendDataToAll(AddSpawnData());
+		NetworkServer.instance.server.SendTCPDataToAll(AddSpawnData());
 	}
 
 	private byte[] AddSpawnData()

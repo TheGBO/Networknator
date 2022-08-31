@@ -51,7 +51,7 @@ public class ClientPlayer : Node2D
 
 	private void SendPosition()
 	{
-		NetworkClient.instance.client.Send(new PacketBuilder()
+		NetworkClient.instance.client.SendTCP(new PacketBuilder()
 			.Write((int)ClientToServer.playerPosition)
 			.Write(GlobalPosition.x)
 			.Write(GlobalPosition.y)

@@ -26,7 +26,7 @@ public class NetworkServer : Node
 
 		server.OnConnection += id => 
 		{
-			server.SendDataTo(id, new PacketBuilder()
+			server.SendTCPDataTo(id, new PacketBuilder()
 				.Write((int)ServerToClient.welcome)
 				.Write(id)
 				.Write($"Hello client, your id is {id}")
@@ -51,7 +51,7 @@ public class NetworkServer : Node
 				ServerPlayer.Spawn(reader.ReadInt());
 				break;
 			case ClientToServer.playerPosition:
-				server.SendDataToAll(new PacketBuilder()
+				server.SendTCPDataToAll(new PacketBuilder()
 					.Write((int)ServerToClient.playerPosition)
 					.Write(senderID)
 					.Write(reader.ReadFloat())

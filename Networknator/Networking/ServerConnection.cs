@@ -21,42 +21,40 @@ namespace Networknator.Networking
 
         public event Action<int> OnDisconnected;
         public event Action<int, byte[]> OnDataFromClient;
+        public event Action<byte[]> OnDataReceived;
+
 
         public ServerConnection(int id)
         {
             ID = id;
-            buffer = new byte[4096];
+            tcpBuffer = new byte[4096];
         }
 
-        public void Connect(TcpClient socket)
+        public void Connect(TcpClient tcpSocket)
         {
-            this.socket = socket;
-            stream = socket.GetStream();
-            new Thread(ReceiveThread).Start();
+            this.tcpSocket = tcpSocket;
+            tcpStream = tcpSocket.GetStream();
+            new Thread(ReceiveTCPThread).Start();
             OnDataReceived += (data) => OnDataFromClient?.Invoke(ID, data);
         }
 
         public void Disconnect()
         {
-            buffer = null;
-            socket = null;
-            stream = null;
+            tcpBuffer = null;
+            tcpSocket = null;
+            tcpStream = null;
             OnDisconnected.Invoke(ID);
         }
 
-        public void Send(byte[] data)
-        {
-            byte[] packetData = data;
-            stream.Write(packetData, 0, packetData.Length);
-        }
+        
 
-        private void ReceiveThread()
+        private void ReceiveTCPThread()
         {
-            while (stream != null)
+            while (tcpStream != null)
             {
                 try
                 {
-                    ReceiveData();
+                    BufferUtils.ReceiveData(tcpStream, ref tcpBuffer, data => OnDataReceived.Invoke(data));
                 }
                 catch (Exception e)
                 {

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net472</TargetFramework>
+    <RootNamespace>Networknator</RootNamespace>
   </PropertyGroup>
 
 </Project>

@@ -18,23 +18,27 @@ namespace Networknator.Networking
         public event Action OnConnected;
         public event Action OnConnectionFailed;
         public event Action<string> OnDisconnected;
+        public event Action<byte[]> OnDataReceived;
+
+
+
 
         public void Run(string connectionString)
         {
             if (IsRunning) return;
-            socket = new TcpClient
+            tcpSocket = new TcpClient
             {
                 ReceiveBufferSize = 4096,
                 SendBufferSize = 4096
             };
-            buffer = new byte[4096];
+            tcpBuffer = new byte[4096];
 
             string[] parsedConn = connectionString.Split(':');
             try
             {
                 IPEndPoint iP = new IPEndPoint(IPAddress.Parse(parsedConn[0]), int.Parse(parsedConn[1]));
-                socket.Connect(iP);
-                stream = socket.GetStream();
+                tcpSocket.Connect(iP);
+                tcpStream = tcpSocket.GetStream();
             }
             catch (Exception e)
             { 
@@ -48,25 +52,13 @@ namespace Networknator.Networking
             new Thread(ReceiveThread).Start();
         }
 
-        public void Send(byte[] data)
-        {
-            try
-            {
-                stream.Write(data, 0, data.Length);
-            }
-            catch (Exception e)
-            {
-                Stop(e.ToString());
-            }
-        }
-
         private void ReceiveThread()
         {
             while (IsRunning)
             {
                 try
                 {
-                    ReceiveData();
+                    BufferUtils.ReceiveData(tcpStream, ref tcpBuffer, data => OnDataReceived.Invoke(data));
                 }
                 catch(Exception e)
                 {

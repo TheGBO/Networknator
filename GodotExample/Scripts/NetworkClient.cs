@@ -54,7 +54,7 @@ public class NetworkClient : Node
 				localID = myID;
 				string message = reader.ReadString();
 				GD.Print(message);
-				client.Send(new PacketBuilder()
+				client.SendTCP(new PacketBuilder()
 					.Write((int)ClientToServer.welcomeReceived)
 					.Write(myID)
 					.Done());
