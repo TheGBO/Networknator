@@ -26,7 +26,7 @@ namespace Networknator.Networking.Packets
 
             return this;
         }
-
+        
         public PacketBuilder Write(byte data) => WriteRaw(new[] { data });
         public PacketBuilder Write(int data) => WriteRaw(BitConverter.GetBytes(data));
         public PacketBuilder Write(long data) => WriteRaw(BitConverter.GetBytes(data));

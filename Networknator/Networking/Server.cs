@@ -23,9 +23,6 @@ namespace Networknator.Networking
         public event Action<int> OnDisconnection;
         public event Action<int, byte[]> OnDataReceived;
 
-        public Dictionary<int, PacketHandler> packetHandlers = new Dictionary<int, PacketHandler>();
-        public delegate void PacketHandler(byte[] data);
-
         public string ConnectionString() => $"{IPUtils.GetLocalIPAddress()}:{Port}";
 
         public void Run(int port, int maxClients = 32)

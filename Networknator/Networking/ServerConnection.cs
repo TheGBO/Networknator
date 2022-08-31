@@ -61,7 +61,6 @@ namespace Networknator.Networking
                 catch (Exception e)
                 {
                     NetworknatorLogger.Log(LogType.error, e.Message);
-                    Disconnect();
                 }
             }
             Disconnect();
