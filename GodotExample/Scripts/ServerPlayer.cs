@@ -9,6 +9,7 @@ public class ServerPlayer : Node2D
 	private static PackedScene playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/ServerPlayer.tscn");
 	public int ID {get;set;}
 	
+	
 	public static void Spawn(int id)
 	{
 		foreach (ServerPlayer otherPlayer in list.Values)
@@ -17,7 +18,7 @@ public class ServerPlayer : Node2D
 		}
 		ServerPlayer player = playerScene.Instance<ServerPlayer>();
 		player.ID = id;
-		player.Name = $"Player::{id}";
+		player.Name = $"Player{id}";
 		player.SendSpawn();
 		NetworkServer.instance.AddChild(player);
 		list.Add(id, player);
@@ -31,6 +32,12 @@ public class ServerPlayer : Node2D
 	public void SendSpawn()
 	{
 		NetworkServer.instance.server.SendTCPDataToAll(AddSpawnData());
+	}
+
+	public void Destroy()
+	{
+		list.Remove(ID);
+		QueueFree();
 	}
 
 	private byte[] AddSpawnData()

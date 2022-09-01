@@ -58,7 +58,7 @@ namespace Networknator.Networking
             {
                 try
                 {
-                    BufferUtils.ReceiveData(tcpStream, ref tcpBuffer, data => OnDataReceived.Invoke(data));
+                    ReceiveData(data => OnDataReceived?.Invoke(data));
                 }
                 catch(Exception e)
                 {

@@ -13,5 +13,19 @@ namespace Networknator.Networking
         {
             tcpStream.Write(data, 0, data.Length);
         }
+
+        public void ReceiveData(Action<byte[]> OnData)
+        {
+            int byteLength = tcpStream.Read(tcpBuffer, 0, 4096);
+
+            byte[] data = new byte[byteLength];
+
+            Array.Copy(tcpBuffer, data, byteLength);
+
+            OnData?.Invoke(data);
+
+            Array.Clear(tcpBuffer, 0, 4096);
+            Array.Clear(data, 0, byteLength);
+        }
     }
 }

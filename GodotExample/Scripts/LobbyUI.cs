@@ -15,6 +15,7 @@ public class LobbyUI : Control
 	private void _on_HostBtn_pressed()
 	{
 		NetworkServer.instance.StartServer();
+		NetworkClient.instance.StartClient();
 	}
 	
 	private void _on_ClientBtn_pressed()

@@ -26,8 +26,15 @@ public class ClientPlayer : Node2D
 			player.isLocal = false;
 			NetworkClient.instance.AddChild(player);
 		}
+		player.Name = $"Player{id}";
 
 		list.Add(id, player);
+	}
+
+	public void Destroy()
+	{
+		list.Remove(ID);
+		QueueFree();
 	}
 
 	public override void _Process(float delta)
@@ -35,18 +42,23 @@ public class ClientPlayer : Node2D
 		if(isLocal)
 		{
 			if(Input.IsKeyPressed((int)KeyList.W))			
-				GlobalPosition -= new Vector2(0,1);
+				Move(new Vector2(0,-1));
 			
 			if(Input.IsKeyPressed((int)KeyList.A))		
-				GlobalPosition -= new Vector2(1,0);
+				Move(new Vector2(-1,0));
 			
 			if(Input.IsKeyPressed((int)KeyList.S))			
-				GlobalPosition += new Vector2(0,1);
+				Move(new Vector2(0,1));
 
 			if(Input.IsKeyPressed((int)KeyList.D))
-				GlobalPosition += new Vector2(1,0);
-			SendPosition();
+				Move(new Vector2(1,0));
 		}
+	}
+
+	private void Move(Vector2 vec)
+	{
+		GlobalPosition += vec;
+		SendPosition();
 	}
 
 	private void SendPosition()

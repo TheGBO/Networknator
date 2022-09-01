@@ -40,6 +40,18 @@ public class NetworkServer : Node
 				HandlePacket(packetID, reader, id);
 			}
 		};
+		server.OnDisconnection += id =>
+		{
+			if(ServerPlayer.list.TryGetValue(id, out ServerPlayer serverPlayer))
+			{
+				serverPlayer.Destroy();
+				GD.Print($"{id} has disconnected");
+			}
+			server.SendTCPDataToAll(new PacketBuilder()
+				.Write((int)ServerToClient.playerLeft)
+				.Write(id)
+				.Done());
+		};
 		server.Run(8090);
 	}
 
@@ -48,7 +60,9 @@ public class NetworkServer : Node
 		switch((ClientToServer)id)
 		{
 			case ClientToServer.welcomeReceived:
-				ServerPlayer.Spawn(reader.ReadInt());
+				int toSpawn = reader.ReadInt();
+				ServerPlayer.Spawn(toSpawn);
+				GD.Print($"server will spawn {toSpawn}");
 				break;
 			case ClientToServer.playerPosition:
 				server.SendTCPDataToAll(new PacketBuilder()

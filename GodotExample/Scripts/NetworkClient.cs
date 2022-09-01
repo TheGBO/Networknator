@@ -58,10 +58,13 @@ public class NetworkClient : Node
 					.Write((int)ClientToServer.welcomeReceived)
 					.Write(myID)
 					.Done());
+				GD.Print("Sending welcomeReceived packet to server");
 				break;
 		
 			case ServerToClient.playerSpawned:
-				ClientPlayer.Spawn(reader.ReadInt());
+				int toSpawn = reader.ReadInt();
+				ClientPlayer.Spawn(toSpawn);
+				GD.Print($"received spawn packet, will spawn {toSpawn}");
 				break;
 
 			case ServerToClient.playerPosition:
@@ -69,6 +72,12 @@ public class NetworkClient : Node
 				{
 					player.GlobalPosition = new Vector2(reader.ReadFloat(), reader.ReadFloat());
 				}
+				break;
+
+			case ServerToClient.playerLeft:
+				int toDelete = reader.ReadInt();
+				ClientPlayer.list[toDelete].Destroy();
+				GD.Print("disconnection packet received");
 				break;
 		}
 	}
