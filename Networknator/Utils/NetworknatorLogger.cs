@@ -26,11 +26,22 @@ namespace Networknator.Utils
             logMethods.Add(LogType.warning, generalLog);
         }
 
+        public static void NormalLog(object toLog)
+        {
+            Log(LogType.normal, toLog);
+        }
+
+        public static void ErrorLog(object toLog)
+        {
+            Log(LogType.error, toLog);
+        }
+
+
         public static void Log(LogType logType, object toLog, [CallerLineNumber] int lineNumber = 0,[CallerMemberName] string caller = null, [CallerFilePath] string callerFile = null)
         {
             if(logMethods.TryGetValue(logType, out LogMethod method))
             {
-                method($"[{DateTime.Now}] :: " + toLog.ToString() + $"  {callerFile}:{caller} at line {lineNumber}");
+                method($"[{DateTime.Now}] :: " + toLog.ToString());
             }
         }
 
