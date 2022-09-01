@@ -1,19 +1,27 @@
-using Example.Singletons;
+using Networknator.Networking;
 using Networknator.Networking.Packets;
 
 namespace Example.Packets
 {
     public class WelcomeHandler : PacketHandlerBase<WelcomePacket>
     {
-        public override void ProcessClient(WelcomePacket packet)
+        public static Dictionary<int, string> users = new Dictionary<int, string>();
+        public override Task ProcessClient(WelcomePacket packet)
         {
-            System.Console.WriteLine($"welcome received, username: {packet.UserName}, my id: ${packet.ID}");
+            Console.WriteLine($"welcome received from server, your id is: ${packet.ID}");
+            Console.Write("Enter an username:");
+            string username = Console.ReadLine() ?? "guest";
+            Console.WriteLine(username);
+            WelcomePacket toSend = new WelcomePacket(packet.ID, username);
+            Client.SendTCPData(toSend);
+            return Task.CompletedTask;
         }
 
-        public override void ProcessServer(WelcomePacket packet, int senderID)
+        public override Task ProcessServer(WelcomePacket packet, int senderID)
         {
-            System.Console.WriteLine($"{packet.UserName} Logged in");
-            ServerManager.users.Add(packet.ID, packet.UserName);
+            Console.WriteLine($"{packet.UserName} Logged in");
+            users.Add(packet.ID, packet.UserName);
+            return Task.CompletedTask;
         }
     }
 }

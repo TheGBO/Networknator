@@ -7,18 +7,36 @@ namespace Example
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             NetworknatorLogger.StartLogger(Console.WriteLine);
-
-            Server.packetHandlers.Register<WelcomeHandler, WelcomePacket>();
-            Server.OnClientConnected += id =>
+            Console.Write("type \"s\" for server, or anything for client > ");
+            string? option = Console.ReadLine();
+            if(option?.ToLower() == "s")
             {
-                Server.SendTCPDataTo(id, new WelcomePacket(id, $"Hello Client, your id is {id}"));
-            };
 
-            Server.Start(8800);
+                Server.packetHandlers.Register<WelcomeHandler, WelcomePacket>();
+                Server.packetHandlers.Register<ChatHandler, ChatPacket>();
+                Server.OnClientConnected += id =>
+                {
+                    Server.SendTCPDataTo(id, new WelcomePacket(id, $"noname"));
+                };
+
+                Server.Start(8800);
+            }
+            else
+            {
+
+                Client.packetHandlers.Register<WelcomeHandler, WelcomePacket>();
+                Client.packetHandlers.Register<ChatHandler, ChatPacket>();
+                
+                Client.Start("127.0.0.1", 8800);
+                while(Client.IsRunning)
+                {
+                    if(!Client.IsRunning) break;
+                }
+            }
+            Console.ReadKey();
 
         }
     }

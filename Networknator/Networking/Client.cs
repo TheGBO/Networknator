@@ -1,10 +1,11 @@
 using System;
 using Networknator.Networking.Packets;
 using Networknator.Networking.Transports;
+using Networknator.Utils;
 
 namespace Networknator.Networking
 {
-    class Client
+    public class Client
     {
 
         public static string IP { get; set; } = "127.0.0.1";
@@ -21,6 +22,7 @@ namespace Networknator.Networking
             tcp.OnData += (id, data) => packetHandlers.HandlePacket(id, data, false);
             tcp.ConnectClient(ip, port);
             IsRunning = true;
+            NetworknatorLogger.NormalLog($"starting client at {ip}:{port}");
         }
 
         public static void Stop()

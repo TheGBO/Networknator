@@ -14,6 +14,7 @@ namespace Networknator.Networking.Transports
         private byte[] recvBuffer;
         public event Action<int, byte[]> OnData;
         public event Action OnConnectedAsClient;
+        public event Action<int> OnDisconnection;
 
         public TCP(int id)
         {
@@ -89,11 +90,19 @@ namespace Networknator.Networking.Transports
                 
                 stream.BeginRead(recvBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                NetworknatorLogger.ErrorLog(e.Message);
-                throw;
+                Disconnect();
             }
+        }
+
+        public void Disconnect()
+        {
+            socket.Close();
+            stream = null;
+            recvBuffer = null;
+            socket = null;
+            OnDisconnection?.Invoke(id);
         }
 
     }

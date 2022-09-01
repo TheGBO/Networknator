@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
+
 namespace Networknator.Networking.Packets
 {
     public interface IPacketHandler
     {
-        void HandleServer(byte[] data, int senderID);
-        void HandleClient(byte[] data);
+        Task HandleServer(byte[] data, int senderID);
+        Task HandleClient(byte[] data);
     }
 }

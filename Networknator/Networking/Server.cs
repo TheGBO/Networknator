@@ -62,6 +62,8 @@ namespace Networknator.Networking
             }
         }
 
+        public static void SendTCPDataToAll<T>(T packet) => SendTCPDataToAll(PacketSerializer.Serialize<T>(packet));
+
         public static void SendTCPDataTo<T>(int id, T packet)
         {
             SendTCPDataTo(id, PacketSerializer.Serialize<T>(packet));
