@@ -52,19 +52,14 @@ namespace Networknator.Networking
             InitServerData();
 
             NetworknatorLogger.Log(LogType.normal, $"Server Initialized at port: {Port} !");
-            new Thread(() => 
-            {
-                IsRunning = true;
-                while (IsRunning)
-                {
-                    try
-                    {
-                        TcpClient client = tcpListener.AcceptTcpClient();
-                        AddConnectedClient(client);
-                    }
-                    catch (Exception) { }
-                }
-            }).Start();
+            tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
+        }
+
+        private void TcpConnectCallback(IAsyncResult result)
+        {
+            TcpClient client = tcpListener.EndAcceptTcpClient(result);
+            tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
+            AddConnectedClient(client);
         }
 
 

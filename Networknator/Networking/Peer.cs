@@ -11,7 +11,7 @@ namespace Networknator.Networking
 
         public void SendTCP(byte[] data)
         {
-            tcpStream.Write(data, 0, data.Length);
+            tcpStream.BeginWrite(data, 0, data.Length, null, null);
         }
 
         public void ReceiveData(Action<byte[]> OnData)

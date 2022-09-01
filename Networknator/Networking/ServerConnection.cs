@@ -34,8 +34,8 @@ namespace Networknator.Networking
         {
             this.tcpSocket = tcpSocket;
             tcpStream = tcpSocket.GetStream();
-            new Thread(ReceiveTCPThread).Start();
             OnDataReceived += (data) => OnDataFromClient?.Invoke(ID, data);
+            tcpStream.BeginRead(tcpBuffer, 0, 4096, ReceiveCallback, null);
         }
 
         public void Disconnect()
@@ -46,23 +46,21 @@ namespace Networknator.Networking
             OnDisconnected.Invoke(ID);
         }
 
-        
-
-        private void ReceiveTCPThread()
+        private void ReceiveCallback(IAsyncResult result)
         {
-            while (tcpStream != null)
+            try
             {
-                try
-                {
-                    ReceiveData(data => OnDataReceived?.Invoke(data));
-
-                }
-                catch (Exception e)
-                {
-                    NetworknatorLogger.Log(LogType.error, e.Message);
-                    Disconnect();
-                }
+                int byteLength = tcpStream.EndRead(result);
+                byte[] data = new byte[byteLength];
+                Array.Copy(tcpBuffer, data, byteLength);
+                OnDataReceived?.Invoke(data);
+                tcpStream.BeginRead(tcpBuffer, 0, 4096, ReceiveCallback, null);
             }
+            catch (Exception e)
+            {
+                NetworknatorLogger.Log(LogType.error, e.Message);
+                Disconnect();
+            } 
         }
     }
 }
