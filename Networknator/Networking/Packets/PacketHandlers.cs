@@ -15,7 +15,7 @@ namespace Networknator.Networking.Packets
             handlers.Add(typeof(TPacket).Name, (THandler)Activator.CreateInstance(typeof(THandler)));
         }
 
-        public void HandlePacket(int senderid, byte[] data)
+        public void HandlePacket(int senderid, byte[] data, bool server)
         {
             using(PacketReader reader = new PacketReader(data))
             {
@@ -24,7 +24,10 @@ namespace Networknator.Networking.Packets
                 byte[] packetDataRead = reader.Read(objectSize);
                 if(handlers.TryGetValue(handlerName, out IPacketHandler handler))
                 {
-                    handler.Handle(packetDataRead, senderid);
+                    if(server)
+                        handler.HandleServer(packetDataRead, senderid);
+                    else
+                        handler.HandleClient(packetDataRead);
                 }
                 else
                 {

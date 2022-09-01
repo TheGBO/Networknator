@@ -4,11 +4,18 @@ namespace Networknator.Networking.Packets
 {
     public abstract class PacketHandlerBase<T> : IPacketHandler where T : class
     {
-        public void Handle(byte[] data, int senderID)
+        public void HandleClient(byte[] data)
         {
-            Process(PacketSerializer.Deserialize<T>(data), senderID);
+            ProcessClient(PacketSerializer.Deserialize<T>(data));
         }
 
-        public abstract void Process(T packet, int senderID);
+        public void HandleServer(byte[] data, int senderID)
+        {
+            ProcessServer(PacketSerializer.Deserialize<T>(data), senderID);
+        }
+
+
+        public abstract void ProcessClient(T packet);
+        public abstract void ProcessServer(T packet, int senderID);
     }
 }

@@ -79,7 +79,7 @@ namespace Networknator.Networking
                 {
                     clients[i].tcp.ConnectServer(client);
                     OnClientConnected?.Invoke(i);
-                    clients[i].tcp.OnData += (id, data) => packetHandlers.HandlePacket(id, data);
+                    clients[i].tcp.OnData += (id, data) => packetHandlers.HandlePacket(id, data, true);
                     return;
                 }
             }

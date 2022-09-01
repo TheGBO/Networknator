@@ -2,6 +2,7 @@ namespace Networknator.Networking.Packets
 {
     public interface IPacketHandler
     {
-        void Handle(byte[] data, int senderID);
+        void HandleServer(byte[] data, int senderID);
+        void HandleClient(byte[] data);
     }
 }

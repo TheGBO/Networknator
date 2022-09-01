@@ -18,7 +18,7 @@ namespace Networknator.Networking
         {
             tcp = new TCP();
             tcp.OnConnectedAsClient += () => OnConnected?.Invoke();
-            tcp.OnData += (id, data) => packetHandlers.HandlePacket(id, data);
+            tcp.OnData += (id, data) => packetHandlers.HandlePacket(id, data, false);
             tcp.ConnectClient(ip, port);
             IsRunning = true;
         }
