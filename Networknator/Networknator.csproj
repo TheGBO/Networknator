@@ -6,4 +6,8 @@
     <RootNamespace>Networknator</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MessagePack" Version="2.4.35" />
+  </ItemGroup>
+
 </Project>

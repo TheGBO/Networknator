@@ -19,7 +19,7 @@ namespace Networknator.Networking.Packets
             dataStream = new MemoryStream(data, offset, length);
         }
 
-        private byte[] Read(int count)
+        public byte[] Read(int count)
         {
             byte[] ret = new byte[count];
             dataStream.Read(ret, 0, count);
