@@ -11,9 +11,22 @@ namespace Example.Packets
             Console.WriteLine($"welcome received from server, your id is: ${packet.ID}");
             Console.Write("Enter an username:");
             string username = Console.ReadLine() ?? "guest";
-            Console.WriteLine(username);
             WelcomePacket toSend = new WelcomePacket(packet.ID, username);
             Client.SendTCPData(toSend);
+            //start chat
+            new Thread(() => 
+            { 
+                Console.Write("Start typing your Messages >> ");
+                while(Client.IsRunning)
+                {
+                    string message = Console.ReadLine() ?? "";
+                    if(message.Trim() != "")
+                    {
+                        Client.SendTCPData<ChatPacket>(new ChatPacket(packet.ID, message));
+                    }
+                }
+            }).Start();
+            
             return Task.CompletedTask;
         }
 

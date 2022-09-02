@@ -5,17 +5,18 @@ namespace Example.Packets
 {
     public class ChatHandler : PacketHandlerBase<ChatPacket>
     {
-        public override async Task ProcessClient(ChatPacket packet)
+        public override Task ProcessClient(ChatPacket packet)
         {
-            System.Console.WriteLine($"{packet.MessageContent}");
-            await Task.CompletedTask;
+            System.Console.WriteLine($"\n{packet.MessageContent}");
+            return Task.CompletedTask;
         }
 
-        public override async Task ProcessServer(ChatPacket packet, int senderID)
+        public override Task ProcessServer(ChatPacket packet, int senderID)
         {
             string toSend = $"[{WelcomeHandler.users[packet.SenderID]}]::{packet.MessageContent}";
+            Console.WriteLine(toSend);
             Server.SendTCPDataToAll<ChatPacket>(new ChatPacket(packet.SenderID, toSend));
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

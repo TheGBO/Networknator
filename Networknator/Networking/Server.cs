@@ -18,6 +18,7 @@ namespace Networknator.Networking
         public static PacketHandlers packetHandlers = new PacketHandlers();
         public static bool IsRunning { get; private set; }
         public static event Action<int> OnClientConnected;
+        public static event Action<int> OnClientDisconnected;
 
         public static void Start(int port, int maxClients = 64)
         {
@@ -80,6 +81,7 @@ namespace Networknator.Networking
                 if(clients[i].tcp.socket == null)
                 {
                     clients[i].tcp.ConnectServer(client);
+                    clients[i].tcp.OnDisconnection += id => OnClientConnected?.Invoke(id);
                     OnClientConnected?.Invoke(i);
                     clients[i].tcp.OnData += (id, data) => packetHandlers.HandlePacket(id, data, true);
                     return;
