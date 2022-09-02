@@ -21,6 +21,10 @@ namespace Example
                 {
                     Server.SendTCPDataTo(id, new WelcomePacket(id, $"noname"));
                 };
+                Server.OnClientDisconnected += id =>
+                {
+                    System.Console.WriteLine($"{id} has disconnected");
+                };
 
                 Server.Start(8800);
             }

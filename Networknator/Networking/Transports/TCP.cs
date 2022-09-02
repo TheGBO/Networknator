@@ -14,7 +14,9 @@ namespace Networknator.Networking.Transports
         private byte[] recvBuffer;
         public event Action<int, byte[]> OnData;
         public event Action OnConnectedAsClient;
+        public event Action OnDisconnectedAsClient;
         public event Action<int> OnDisconnection;
+        public bool isServer;
 
         public TCP(int id)
         {
@@ -31,7 +33,7 @@ namespace Networknator.Networking.Transports
             this.socket = socket;
             this.socket.ReceiveBufferSize = dataBufferSize;
             this.socket.SendBufferSize = dataBufferSize;
-
+            isServer = true;
             stream = this.socket.GetStream();
             recvBuffer = new byte[dataBufferSize];
 
@@ -78,6 +80,7 @@ namespace Networknator.Networking.Transports
                 int byteSize = stream.EndRead(result);
                 if(byteSize <= 0)
                 {
+                    Disconnect();
                     return;
                 }
                 byte[] data = new byte[byteSize];
@@ -98,11 +101,12 @@ namespace Networknator.Networking.Transports
 
         public void Disconnect()
         {
+            OnDisconnection?.Invoke(id);
+            OnDisconnectedAsClient?.Invoke();
             socket.Close();
+            socket = null;
             stream = null;
             recvBuffer = null;
-            socket = null;
-            OnDisconnection?.Invoke(id);
         }
 
     }

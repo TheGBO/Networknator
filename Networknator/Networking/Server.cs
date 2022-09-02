@@ -13,7 +13,7 @@ namespace Networknator.Networking
         public static int Port{ get; set; }
 
         private static TcpListener tcpListener;
-        private static Dictionary<int, ServerConnection> clients = new Dictionary<int, ServerConnection>();
+        public static Dictionary<int, ServerConnection> clients = new Dictionary<int, ServerConnection>();
 
         public static PacketHandlers packetHandlers = new PacketHandlers();
         public static bool IsRunning { get; private set; }
@@ -24,12 +24,12 @@ namespace Networknator.Networking
         {
             MaxClients = maxClients;
             Port = port;
+            tcpListener = new TcpListener(IPAddress.Any, Port);
+            tcpListener.Start();
 
             NetworknatorLogger.NormalLog($"Starting server at port {Port}");
             InitializeServerData();
 
-            tcpListener = new TcpListener(IPAddress.Any, Port);
-            tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
 
             IsRunning = true;
@@ -40,7 +40,9 @@ namespace Networknator.Networking
         {
             IsRunning = false;
             tcpListener.Stop();
+            packetHandlers.handlers.Clear();
             NetworknatorLogger.NormalLog("Server Stopped!");
+            clients.Clear();
         }
 
         public static void SendTCPDataTo(int id, byte[] data)
@@ -51,7 +53,7 @@ namespace Networknator.Networking
             }
             catch (System.Exception)
             {
-                
+                clients[id].tcp.Disconnect();
             }
         }
 
@@ -81,7 +83,7 @@ namespace Networknator.Networking
                 if(clients[i].tcp.socket == null)
                 {
                     clients[i].tcp.ConnectServer(client);
-                    clients[i].tcp.OnDisconnection += id => OnClientConnected?.Invoke(id);
+                    clients[i].tcp.OnDisconnection += id => OnClientDisconnected.Invoke(id);
                     OnClientConnected?.Invoke(i);
                     clients[i].tcp.OnData += (id, data) => packetHandlers.HandlePacket(id, data, true);
                     return;
