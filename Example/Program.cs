@@ -9,6 +9,11 @@ namespace Example
     {
         static void Main(string[] args)
         {
+            ChatApp();
+        }
+
+        private static void ChatApp()
+        {
             NetworknatorLogger.StartLogger(Console.WriteLine);
             Console.Write("type \"s\" for server, or anything for client > ");
             string? option = Console.ReadLine();
@@ -41,7 +46,6 @@ namespace Example
                 }
             }
             Console.ReadKey();
-
         }
     }
 }
