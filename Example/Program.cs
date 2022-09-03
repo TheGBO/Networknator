@@ -38,7 +38,7 @@ namespace Example
 
                 Client.packetHandlers.AutoRegisterHandlers();
 
-                Client.Start("127.0.0.1", 1244);
+                Client.Start("127.0.0.1", 8800);
                 while(Client.IsRunning)
                 {
                     if(!Client.IsRunning) break;

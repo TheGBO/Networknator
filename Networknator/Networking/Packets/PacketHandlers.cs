@@ -18,6 +18,7 @@ namespace Networknator.Networking.Packets
             handlers.Add(typeof(TPacket).Name, (THandler)Activator.CreateInstance(typeof(THandler)));
         }
 
+        //Call this method to automatically handle packets without registering them manually
         public void AutoRegisterHandlers()
         {
             handlers.Clear();
