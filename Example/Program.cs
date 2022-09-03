@@ -39,7 +39,7 @@ namespace Example
                 Client.packetHandlers.Register<WelcomeHandler, WelcomePacket>();
                 Client.packetHandlers.Register<ChatHandler, ChatPacket>();
                 
-                Client.Start("127.0.0.1", 8800);
+                Client.Start("127.0.0.1", 1244);
                 while(Client.IsRunning)
                 {
                     if(!Client.IsRunning) break;
