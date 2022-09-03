@@ -3,6 +3,7 @@ using Networknator.Networking.Packets;
 
 namespace Example.Packets
 {
+    [RegisterHandler(typeof(ChatPacket))]
     public class ChatHandler : PacketHandlerBase<ChatPacket>
     {
         public override Task ProcessClient(ChatPacket packet)

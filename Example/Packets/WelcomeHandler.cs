@@ -3,6 +3,7 @@ using Networknator.Networking.Packets;
 
 namespace Example.Packets
 {
+    [RegisterHandler(typeof(WelcomePacket))]
     public class WelcomeHandler : PacketHandlerBase<WelcomePacket>
     {
         public static Dictionary<int, string> users = new Dictionary<int, string>();

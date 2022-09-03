@@ -20,8 +20,8 @@ namespace Example
             if(option?.ToLower() == "s")
             {
 
-                Server.packetHandlers.Register<WelcomeHandler, WelcomePacket>();
-                Server.packetHandlers.Register<ChatHandler, ChatPacket>();
+                Server.packetHandlers.AutoRegisterHandlers();
+                
                 Server.OnClientConnected += id =>
                 {
                     Server.SendTCPDataTo(id, new WelcomePacket(id, $"noname"));
@@ -36,9 +36,8 @@ namespace Example
             else
             {
 
-                Client.packetHandlers.Register<WelcomeHandler, WelcomePacket>();
-                Client.packetHandlers.Register<ChatHandler, ChatPacket>();
-                
+                Client.packetHandlers.AutoRegisterHandlers();
+
                 Client.Start("127.0.0.1", 1244);
                 while(Client.IsRunning)
                 {
