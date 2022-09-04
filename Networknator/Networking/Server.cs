@@ -45,7 +45,7 @@ namespace Networknator.Networking
             clients.Clear();
         }
 
-        public static void SendTCPDataTo(int id, byte[] data)
+        private static void SendTCPDataTo(int id, byte[] data)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Networknator.Networking
             }
         }
 
-        public static void SendTCPDataToAll(byte[] data)
+        private static void SendTCPDataToAll(byte[] data)
         {
             for (int i = 1; i <= MaxClients; i++)
             {
