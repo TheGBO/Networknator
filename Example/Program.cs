@@ -1,7 +1,6 @@
 ﻿using Example.Packets;
 using Networknator;
 using Networknator.Networking;
-using Networknator.Networking.RelayerClient;
 using Networknator.Utils;
 
 namespace Example
@@ -10,17 +9,7 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            RelayerSetup();
-            Console.ReadLine();
-        }
-
-        private static void RelayerSetup()
-        {
-            RelayerClient rc = new RelayerClient(7777, "127.0.0.1:8800");
-            rc.CreateRoom(true, roomData =>
-            {
-                Console.WriteLine(roomData.JoinCode);
-            });
+            
         }
 
         private static void ChatApp()
