@@ -9,7 +9,7 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            
+            ChatApp();
         }
 
         private static void ChatApp()
