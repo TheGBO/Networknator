@@ -36,7 +36,7 @@ namespace Networknator.Networking
 
         public static void SendTCPData<T>(T packet) => SendTCPData(PacketSerializer.Serialize<T>(packet));
 
-        public static void SendTCPData(byte[] data)
+        private static void SendTCPData(byte[] data)
         {
             tcp.Send(data);
         }
